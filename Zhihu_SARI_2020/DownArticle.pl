@@ -1,5 +1,7 @@
+#!/usr/bin/perl
 =info
     Author: 523066680
+      Date: 2020-02
 =cut
 
 use utf8;
@@ -33,9 +35,12 @@ sub get_page
     my ( $ua ) = @_;
     my $file;
     my $res;
+    my $ta;
+    my $delay = 600;  #seconds
 
     while (1)
     {
+        $ta = time();
         $file = time2str("%m-%d %H_%M_%S.html", time);
         $res = try_to_get($ua, $url, \@headers ) ;
         if ( $res and $res->is_success() ) {
@@ -45,7 +50,11 @@ sub get_page
             printf "false\n";
         }
 
-        for ( 1 .. 10 ) { print "."; sleep 60.0; }
+        while ( time() - $ta < 600  )
+        {
+            sleep 1.0;
+            print "." if time() % 10 == 1;
+        }
         print "\n";
     }
 }
